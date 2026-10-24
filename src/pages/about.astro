@@ -1,12 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
+import { photos } from '../data/photos';
+const portrait = photos[1]; // misty forest as temporary visual
 ---
 <Base title="About — Lens & Light" description="The photographer behind Lens & Light.">
   <main class="section container about">
     <p class="eyebrow" data-reveal="clip-up">About</p>
     <h1 data-reveal="clip-up">The person behind the lens</h1>
     <div class="two-col">
-      <img src="/images/forest.webp" alt="Misty forest" loading="lazy" data-reveal="wave" />
+      <img src={portrait.src} alt="Misty forest, one of the photographer's works" loading="lazy" data-reveal="wave" />
       <div class="prose" data-reveal="clip-up">
         <p><strong>[Your name]</strong> — student, daily photoblogger, and member of the photography cell at [your college].</p>
         <p><em>This is a placeholder. Replace it with your real story — never let any tool invent it for you.</em></p>
