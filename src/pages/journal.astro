@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('journal')).sort((a, b) => +new Date(b.data.date) - +new Date(a.data.date));
+---
+<Base title="Journal — Lens & Light" description="Daily stories behind the photographs.">
+  <main class="section container">
+    <p class="eyebrow" data-reveal="clip-up">Photo journal</p>
+    <h1 data-reveal="clip-up">Stories behind the frames</h1>
+    <div class="posts">
+      {posts.map((post) => (
+        <a href={`/journal/${post.slug}/`} class="post" data-reveal="wave">
+          <img src={post.data.cover} alt={`Cover photo for ${post.data.title}`} loading="lazy" />
+          <div class="post-body">
+            <p class="eyebrow">{post.data.date.toDateString()}{post.data.location && ` · ${post.data.location}`}</p>
+            <h2>{post.data.title}</h2>
+            {post.data.description && <p>{post.data.description}</p>}
+            <p class="tags">{post.data.tags.map((t) => `#${t.replace(/\s+/g, '')}`).join('&nbsp;&nbsp;')}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+    {posts.length === 0 && <p class="empty">No journal entries yet. Add your first post in src/content/journal/.</p>}
+  </main>
+</Base>
+<style>
+  h1 { margin: 0.4rem 0 2.5rem; }
+  .posts { display: grid; gap: 3rem; }
+  .post { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.2fr); gap: 2rem; align-items: center; }
+  .post img { aspect-ratio: 16/10; object-fit: cover; border-radius: 4px; transition: transform 0.6s ease; width: 100%; }
+  .post:hover img { transform: scale(1.02); }
+  .post h2 { margin: 0.3rem 0 0.6rem; font-size: 1.5rem; }
+  .post-body p { opacity: 0.75; }
+  .tags { color: var(--gold); font-size: 0.75rem; letter-spacing: 0.08em; }
+  .empty { opacity: 0.6; padding: 3rem 0; }
+  @media (max-width: 720px) { .post { grid-template-columns: 1fr; } }
+</style>
