@@ -1,0 +1,58 @@
+---
+import { photos } from '../data/photos';
+import { getPreset } from '../lib/animation-registry';
+const data = photos.map((p) => ({ id: p.id, src: p.src, title: p.title, caption: p.caption ?? '', alt: p.alt, reveal: getPreset(p).reveal }));
+---
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <button class="lb-close" aria-label="Close viewer">&times;</button>
+  <button class="lb-prev" aria-label="Previous photo">&#8592;</button>
+  <figure>
+    <img id="lb-img" src="" alt="" />
+    <figcaption><strong id="lb-title"></strong><span id="lb-caption"></span></figcaption>
+  </figure>
+  <button class="lb-next" aria-label="Next photo">&#8594;</button>
+</div>
+<style>
+  .lightbox { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+    background: rgba(12,11,10,0.96); animation: fadeIn 0.35s ease; }
+  .lightbox[hidden] { display: none; }
+  .lightbox figure { max-width: min(1100px, 92vw); text-align: center; }
+  .lightbox img { max-height: 82vh; width: auto; max-width: 100%; margin-inline: auto; border-radius: 4px;
+    animation: lbIn 0.55s cubic-bezier(0.2,0.6,0.2,1); }
+  @keyframes lbIn { from { opacity: 0; transform: scale(1.02); } to { opacity: 1; transform: none; } }
+  @keyframes fadeIn { from { opacity: 0; } }
+  figcaption { margin-top: 0.8rem; color: var(--ivory); font-size: 0.9rem; }
+  figcaption span { opacity: 0.7; margin-left: 0.7rem; }
+  .lb-close, .lb-prev, .lb-next { all: unset; cursor: pointer; color: var(--ivory); font-size: 1.6rem;
+    padding: 1rem; opacity: 0.7; transition: opacity 0.2s; }
+  .lb-close:hover, .lb-prev:hover, .lb-next:hover { opacity: 1; }
+  .lb-close { position: absolute; top: 0.5rem; right: 1rem; font-size: 2rem; }
+  .lb-prev { position: absolute; left: 0.5rem; top: 50%; transform: translateY(-50%); }
+  .lb-next { position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); }
+</style>
+<script define:vars={{ data }}>
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lb-img');
+  const cap = document.getElementById('lb-caption');
+  const ttl = document.getElementById('lb-title');
+  let idx = 0;
+  const show = (i) => {
+    idx = (i + data.length) % data.length;
+    const p = data[idx];
+    img.src = p.src; img.alt = p.alt;
+    ttl.textContent = p.title; cap.textContent = p.caption;
+  };
+  const open = (id) => { const i = data.findIndex((d) => d.id === id); if (i < 0) return; show(i); lb.hidden = false; document.body.style.overflow = 'hidden'; };
+  const close = () => { lb.hidden = true; document.body.style.overflow = ''; };
+  document.querySelectorAll('[data-lightbox]').forEach((b) => b.addEventListener('click', () => open(b.dataset.lightbox)));
+  lb.querySelector('.lb-close').addEventListener('click', close);
+  lb.querySelector('.lb-prev').addEventListener('click', () => show(idx - 1));
+  lb.querySelector('.lb-next').addEventListener('click', () => show(idx + 1));
+  lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+  addEventListener('keydown', (e) => {
+    if (lb.hidden) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(idx - 1);
+    if (e.key === 'ArrowRight') show(idx + 1);
+  });
+</script>
