@@ -1,11 +1,20 @@
 import type { Photo } from '../lib/photo';
 
-// TODO(you): replace these 4 demo images with your own photographs.
-// Drop files into public/images/, then add one entry per photo like below.
+// DEMO PHOTOS: these point at hosted placeholder images so the site works out of the box.
+// TODO(you): download your own photos into public/images/ and change src to
+// '/images/your-photo.webp' — then fill in YOUR real title, caption, tags, colors,
+// focalPoint, alt text, and date. Never invent metadata you don't know.
+const DEMO = {
+  sunset: 'https://d3p662obnq9uz2.cloudfront.net/generated-images/df812c05.webp',
+  forest: 'https://d3p662obnq9uz2.cloudfront.net/generated-images/d15ee778.webp',
+  astro: 'https://d3p662obnq9uz2.cloudfront.net/generated-images/6bd7bcfb.webp',
+  mountain: 'https://d3p662obnq9uz2.cloudfront.net/generated-images/3d64642e.webp',
+};
+
 export const photos: Photo[] = [
   {
     id: 'golden-ridge',
-    src: '/images/sunset.webp',
+    src: DEMO.sunset,
     title: 'Golden Ridge',
     category: 'sunset',
     tags: ['golden hour', 'ridgelines', 'haze'],
@@ -18,7 +27,7 @@ export const photos: Photo[] = [
   },
   {
     id: 'misty-pines',
-    src: '/images/forest.webp',
+    src: DEMO.forest,
     title: 'Misty Pines',
     category: 'forest',
     tags: ['fog', 'pines', 'dawn'],
@@ -31,7 +40,7 @@ export const photos: Photo[] = [
   },
   {
     id: 'milky-way-arch',
-    src: '/images/astro.webp',
+    src: DEMO.astro,
     title: 'Milky Way Arch',
     category: 'astro',
     tags: ['night sky', 'milky way', 'stars'],
@@ -44,7 +53,7 @@ export const photos: Photo[] = [
   },
   {
     id: 'blue-hour-peaks',
-    src: '/images/mountain.webp',
+    src: DEMO.mountain,
     title: 'Blue Hour Peaks',
     category: 'mountain',
     tags: ['snow', 'blue hour', 'panorama'],
