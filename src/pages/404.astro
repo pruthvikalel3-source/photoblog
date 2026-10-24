@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="404 — Lens & Light" description="Page not found.">
+  <main class="section container nf">
+    <p class="eyebrow">Error 404</p>
+    <h1 data-reveal="scale-fade">This frame doesn't exist.</h1>
+    <p data-reveal="clip-up">The page you're looking for was never developed.</p>
+    <p class="back"><a href="/">&#8592; Back to the homepage</a></p>
+  </main>
+</Base>
+<style>
+  .nf { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; }
+  .nf h1 { margin: 0.5rem 0; }
+  .back { margin-top: 2rem; }
+  .back a { color: var(--gold); }
+</style>
