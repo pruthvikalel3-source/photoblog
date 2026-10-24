@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { photos } from '../data/photos';
+const portrait = photos[1]; // misty forest as temporary visual
+---
+<Base title="About — Lens & Light" description="The photographer behind Lens & Light.">
+  <main class="section container about">
+    <p class="eyebrow" data-reveal="clip-up">About</p>
+    <h1 data-reveal="clip-up">The person behind the lens</h1>
+    <div class="two-col">
+      <img src={portrait.src} alt="Misty forest, one of the photographer's works" loading="lazy" data-reveal="wave" />
+      <div class="prose" data-reveal="clip-up">
+        <p><strong>[Your name]</strong> — student, daily photoblogger, and member of the photography cell at [your college].</p>
+        <p><em>This is a placeholder. Replace it with your real story — never let any tool invent it for you.</em></p>
+        <h2>Equipment</h2>
+        <p>[Your camera body] &middot; [Your lenses] &middot; [Tripod / filters]</p>
+        <h2>Philosophy</h2>
+        <p>One honest frame a day beats a hundred rushed ones.</p>
+      </div>
+    </div>
+  </main>
+</Base>
+<style>
+  .about h1 { margin: 0.4rem 0 2.5rem; }
+  .two-col { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); gap: 3rem; align-items: start; }
+  .two-col img { border-radius: 4px; aspect-ratio: 4/5; object-fit: cover; width: 100%; }
+  .prose h2 { font-size: 1.3rem; margin: 1.6rem 0 0.4rem; }
+  .prose p { opacity: 0.8; }
+  @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
+</style>

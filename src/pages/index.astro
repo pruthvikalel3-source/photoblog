@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import PhotoCard from '../components/PhotoCard.astro';
+import { photos } from '../data/photos';
+import { getCollection } from 'astro:content';
+const hero = photos[0];
+const featured = photos.slice(1, 4);
+const posts = (await getCollection('journal')).sort((a, b) => +new Date(b.data.date) - +new Date(a.data.date));
+const latest = posts[0];
+---
+<Base title="Lens & Light — Landscape Photography Journal" description="A daily photoblog of mountains, forests, night skies and golden light.">
+  <section class="hero fx-glow">
+    <img src={hero.src} alt={hero.alt} class="hero-img" fetchpriority="high"
+         style={`object-position:${hero.focalPoint?.x ?? 50}% ${hero.focalPoint?.y ?? 50}%`} />
+    <div class="hero-text container">
+      <p class="eyebrow hero-title">A daily photoblog</p>
+      <h1 class="hero-title">Chasing light,<br />one frame a day.</h1>
+      <a href="/portfolio" class="cta hero-title">View the portfolio &#8594;</a>
+    </div>
+  </section>
+
+  <section class="section container">
+    <p class="eyebrow" data-reveal="clip-up">Latest frames</p>
+    <h2 data-reveal="clip-up">Recent photographs</h2>
+    <div class="grid">
+      {featured.map((p, i) => <PhotoCard photo={p} eager={i === 0} />)}
+    </div>
+  </section>
+
+  <section class="section container">
+    <p class="eyebrow" data-reveal="clip-up">Journal</p>
+    <h2 data-reveal="clip-up">Latest story</h2>
+    {latest && (
+      <a href={`/journal/${latest.slug}/`} class="latest-post" data-reveal="wave">
+        <img src={latest.data.cover} alt={`Cover for ${latest.data.title}`} loading="lazy" />
+        <div>
+          <p class="eyebrow">{latest.data.date.toDateString()}</p>
+          <h3>{latest.data.title}</h3>
+          {latest.data.description && <p>{latest.data.description}</p>}
+        </div>
+      </a>
+    )}
+  </section>
+</Base>
+<style>
+  .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; isolation: isolate; }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;
+    animation: slowZoom 14s ease-out forwards; }
+  @keyframes slowZoom { from { transform: scale(1.06); } to { transform: scale(1); } }
+  .hero-text { position: relative; padding-bottom: 14svh; }
+  .hero-text .hero-title { animation-delay: 0.35s; }
+  .hero-text h1 { margin: 0.6rem 0 1.4rem; text-shadow: 0 2px 30px rgba(0,0,0,0.5); }
+  .cta { display: inline-block; border: 1px solid var(--gold); padding: 0.7rem 1.6rem; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.2em; transition: background 0.3s, color 0.3s; }
+  .cta:hover { background: var(--gold); color: var(--charcoal); }
+  .grid { columns: 3 260px; column-gap: 2rem; margin-top: 2rem; }
+  .latest-post { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2rem; margin-top: 2rem;
+    align-items: center; }
+  .latest-post img { border-radius: 4px; aspect-ratio: 16/10; object-fit: cover; width: 100%; }
+  .latest-post h3 { font-size: 1.5rem; margin: 0.4rem 0; }
+  .latest-post p { opacity: 0.75; }
+  @media (max-width: 720px) { .latest-post { grid-template-columns: 1fr; } .grid { columns: 2; } }
+</style>

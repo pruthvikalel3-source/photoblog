@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import PhotoCard from '../components/PhotoCard.astro';
+import Lightbox from '../components/Lightbox.astro';
+import { photos } from '../data/photos';
+import { CATEGORIES } from '../lib/animation-registry';
+---
+<Base title="Portfolio — Lens & Light" description="Selected landscape photographs, grouped by category.">
+  <main class="section container">
+    <p class="eyebrow" data-reveal="clip-up">Portfolio</p>
+    <h1 data-reveal="clip-up">Selected work</h1>
+    <div class="filters" role="group" aria-label="Filter photographs by category" data-reveal="clip-up">
+      <button class="filter active" data-cat="all" aria-pressed="true">All</button>
+      {CATEGORIES.filter((c) => photos.some((p) => p.category === c.key)).map((c) => (
+        <button class="filter" data-cat={c.key} aria-pressed="false">{c.label}</button>
+      ))}
+    </div>
+    <div class="grid" id="pf-grid">
+      {photos.map((p) => <PhotoCard photo={p} showLightbox={true} />)}
+    </div>
+    <p class="empty" hidden>No photographs in this category yet — check back soon.</p>
+  </main>
+  <Lightbox />
+</Base>
+<style>
+  h1 { margin: 0.4rem 0 1.5rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2.5rem; }
+  .filter { background: none; border: 1px solid rgba(245,240,232,0.25); color: inherit; padding: 0.45rem 1.1rem;
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; cursor: pointer; transition: all 0.25s; }
+  body[data-theme='light'] .filter { border-color: rgba(42,40,37,0.25); }
+  .filter:hover { border-color: var(--gold); }
+  .filter.active { background: var(--gold); border-color: var(--gold); color: var(--charcoal); }
+  .grid { columns: 3 280px; column-gap: 2rem; }
+  .empty { text-align: center; opacity: 0.6; padding: 3rem 0; }
+</style>
+<script>
+  const buttons = [...document.querySelectorAll('.filter')];
+  const cards = [...document.querySelectorAll('#pf-grid .card')];
+  const emptyMsg = document.querySelector('.empty');
+  buttons.forEach((btn) => btn.addEventListener('click', () => {
+    buttons.forEach((b) => { b.classList.toggle('active', b === btn); b.setAttribute('aria-pressed', String(b === btn)); });
+    const cat = btn.dataset.cat;
+    let shown = 0;
+    cards.forEach((card) => {
+      const match = cat === 'all' || card.dataset.cat === cat;
+      card.style.display = match ? '' : 'none';
+      if (match) { shown++; card.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('revealed')); }
+    });
+    if (emptyMsg) emptyMsg.hidden = shown > 0;
+  }));
+</script>

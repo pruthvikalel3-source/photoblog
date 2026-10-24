@@ -1,0 +1,36 @@
+---
+import type { Photo } from '../lib/photo';
+import { getPreset, accentOf } from '../lib/animation-registry';
+interface Props { photo: Photo; eager?: boolean; showLightbox?: boolean }
+const { photo, eager = false, showLightbox = false } = Astro.props;
+const preset = getPreset(photo);
+const accent = accentOf(photo);
+const fp = photo.focalPoint ?? { x: 50, y: 50 };
+---
+<article class="card" data-cat={photo.category} style={`--accent:${accent}`}>
+  <button class="card-btn" data-lightbox={showLightbox ? photo.id : undefined}
+          aria-label={`Open ${photo.title} in full screen`}>
+    <div class={`frame ${preset.effect ? `fx-${preset.effect}` : ''}`} data-reveal={preset.reveal}
+         data-parallax={String(preset.parallax)}>
+      <img src={photo.src} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async"
+           style={`object-position:${fp.x}% ${fp.y}%`} />
+    </div>
+  </button>
+  <div class="meta">
+    <h3>{photo.title}</h3>
+    {photo.caption && <p>{photo.caption}</p>}
+    <p class="tags">{photo.tags.map((t) => `#${t.replace(/\s+/g, '')}`).join('&nbsp;&nbsp;')}</p>
+  </div>
+</article>
+<style>
+  .card { break-inside: avoid; margin-bottom: 2.5rem; }
+  .card-btn { all: unset; cursor: pointer; display: block; width: 100%; }
+  .frame { position: relative; overflow: hidden; border-radius: 4px; aspect-ratio: 16/10; background: var(--charcoal-2); }
+  .frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.2,0.6,0.2,1); }
+  .card-btn:hover .frame img, .card-btn:focus-visible .frame img { transform: scale(1.04); }
+  .card-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .meta { padding-top: 0.9rem; }
+  .meta h3 { font-size: 1.15rem; margin-bottom: 0.2rem; }
+  .meta p { font-size: 0.9rem; opacity: 0.75; }
+  .tags { color: var(--accent); font-size: 0.75rem !important; letter-spacing: 0.08em; margin-top: 0.3rem; }
+</style>

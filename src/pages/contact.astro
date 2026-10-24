@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+const instagram = import.meta.env.PUBLIC_INSTAGRAM ?? 'https://instagram.com/yourhandle';
+const email = import.meta.env.PUBLIC_EMAIL ?? 'you@example.com';
+---
+<Base title="Contact — Lens & Light" description="Get in touch for prints, collabs and photography-cell projects.">
+  <main class="section container contact">
+    <p class="eyebrow" data-reveal="clip-up">Contact</p>
+    <h1 data-reveal="clip-up">Say hello</h1>
+    <p class="lede" data-reveal="clip-up">For prints, collaborations, or photography-cell projects — reach me anywhere below.</p>
+    <ul class="links" data-reveal="wave">
+      <li><a href={instagram} rel="noopener" target="_blank">Instagram &#8599;</a></li>
+      <li><a href={`mailto:${email}`}>Email &#8599;</a></li>
+      <li><a href="/portfolio">Portfolio &#8599;</a></li>
+    </ul>
+  </main>
+</Base>
+<style>
+  .lede { margin: 1rem 0 2.5rem; opacity: 0.75; max-width: 46ch; }
+  .links { list-style: none; display: grid; gap: 1rem; font-family: var(--font-serif); font-size: 1.4rem; }
+  .links a { border-bottom: 1px solid transparent; transition: border-color 0.3s; }
+  .links a:hover { border-color: var(--gold); }
+</style>

@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { photos } from '../../data/photos';
+export async function getStaticPaths() {
+  const posts = await getCollection('journal');
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await post.render();
+const related = photos.filter((p) => post.data.tags.some((t) => p.tags.includes(t))).slice(0, 3);
+---
+<Base title={`${post.data.title} — Journal`} description={post.data.description ?? post.data.title} image={post.data.cover}>
+  <main class="container post-page">
+    <article>
+      <header>
+        <p class="eyebrow" data-reveal="clip-up">Journal &middot; {post.data.date.toDateString()}</p>
+        <h1 data-reveal="clip-up">{post.data.title}</h1>
+        {post.data.location && <p class="loc" data-reveal="clip-up">{post.data.location}</p>}
+        {post.data.camera && <p class="cam" data-reveal="clip-up">{post.data.camera}</p>}
+      </header>
+      <img class="cover" src={post.data.cover} alt={`Cover photo for ${post.data.title}`} data-reveal="scale-fade" />
+      <div class="prose" data-reveal="clip-up"><Content /></div>
+      <p class="tags" data-reveal="clip-up">{post.data.tags.map((t) => `#${t.replace(/\s+/g, '')}`).join('&nbsp;&nbsp;')}</p>
+    </article>
+    {related.length > 0 && (
+      <aside class="section">
+        <h2>Related photographs</h2>
+        <div class="rel-grid">
+          {related.map((p) => (
+            <figure>
+              <img src={p.src} alt={p.alt} loading="lazy" />
+              <figcaption>{p.title}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </aside>
+    )}
+    <p class="back"><a href="/journal">&#8592; Back to journal</a></p>
+  </main>
+</Base>
+<style>
+  .post-page { padding: 4rem 0 3rem; }
+  h1 { margin: 0.5rem 0; }
+  .loc, .cam { opacity: 0.65; font-size: 0.9rem; }
+  .cover { width: 100%; border-radius: 4px; margin: 1.8rem 0; aspect-ratio: 16/9; object-fit: cover; }
+  .prose { max-width: 62ch; font-size: 1.05rem; }
+  .prose p { margin-bottom: 1.2rem; }
+  .tags { color: var(--gold); font-size: 0.8rem; letter-spacing: 0.08em; }
+  .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; margin-top: 1.2rem; }
+  .rel-grid img { aspect-ratio: 16/10; object-fit: cover; border-radius: 4px; width: 100%; }
+  figcaption { font-size: 0.85rem; opacity: 0.7; margin-top: 0.3rem; }
+  .back { margin-top: 3rem; }
+</style>
